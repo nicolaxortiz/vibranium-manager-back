@@ -94,7 +94,7 @@ const downloadCC = (res, order) => {
               { text: "Tel: 318 4988165", style: "contact" },
               { text: "Email: lcristiansney@gmail.com", style: "contact" },
               {
-                text: `Fecha: ${order.createdAt.toLocaleDateString()}`,
+                text: `Fecha: ${order.createdAt.toLocaleDateString("es-CO")}`,
                 style: "contact",
               },
             ],
