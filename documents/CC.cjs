@@ -25,9 +25,12 @@ const downloadCC = (res, order) => {
     { text: prod.code || "", style: "tableCellCenter" },
     { text: prod.name, style: "tableCell" },
     { text: prod.quantity.toString(), style: "tableCellCenter" },
-    { text: `$ ${prod.price.toLocaleString()}`, style: "tableCellRight" },
     {
-      text: `$ ${(prod.quantity * prod.price).toLocaleString()}`,
+      text: `$ ${prod.price.toLocaleString("es-CO")}`,
+      style: "tableCellRight",
+    },
+    {
+      text: `$ ${(prod.quantity * prod.price).toLocaleString("es-CO")}`,
       style: "tableCellRight",
     },
   ]);
@@ -194,7 +197,7 @@ const downloadCC = (res, order) => {
                   order.documentType === "CC" ? "totalLabel" : "totalValueBold",
               },
               {
-                text: `$ ${subtotal.toLocaleString()}`,
+                text: `$ ${subtotal.toLocaleString("es-CO")}`,
                 style:
                   order.documentType === "CC" ? "totalLabel" : "totalValueBold",
               },
@@ -208,7 +211,7 @@ const downloadCC = (res, order) => {
                     "",
                     { text: "ABONO", style: "totalLabel" },
                     {
-                      text: `$ ${order.paid.toLocaleString()}`,
+                      text: `$ ${order.paid.toLocaleString("es-CO")}`,
                       style: "totalValue",
                     },
                   ],
@@ -223,7 +226,9 @@ const downloadCC = (res, order) => {
                     "",
                     { text: "SALDO", style: "totalLabelBold" },
                     {
-                      text: `$ ${(subtotal - order.paid).toLocaleString()}`,
+                      text: `$ ${(subtotal - order.paid).toLocaleString(
+                        "es-CO"
+                      )}`,
                       style: "totalValueBold",
                     },
                   ],
