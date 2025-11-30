@@ -41,19 +41,13 @@ export const getCustomerById = async (req, res) => {
 
 export const searchCustomers = async (req, res) => {
   try {
-    const q = (req.query.q || "").trim();
-
-    if (!q) {
-      return res.status(400).json({
-        message: "Please provide a search query using the 'q' parameter.",
-      });
-    }
+    const { search = "", page = 1, limit = 10 } = req.query;
 
     // Escapa caracteres especiales para usar en RegExp
     const escapeRegExp = (string) =>
       string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
-    const escaped = escapeRegExp(q);
+    const escaped = escapeRegExp(search);
     const partialRegex = new RegExp(escaped, "i"); // partial, case-insensitive
     const startsWithRegex = new RegExp("^" + escaped, "i"); // startsWith (useful for documentId)
 
@@ -62,9 +56,28 @@ export const searchCustomers = async (req, res) => {
       $or: [{ name: partialRegex }, { document: startsWithRegex }],
     };
 
-    const results = await Customer.find(filters);
+    // Paginación
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+    const limitNum = parseInt(limit);
 
-    res.json(results);
+    const results = await Customer.find(filters)
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limitNum);
+
+    const total = await Customer.countDocuments({
+      ...filters,
+    });
+
+    res.json({
+      customers: results,
+      pagination: {
+        page: parseInt(page),
+        limit: limitNum,
+        total,
+        pages: Math.ceil(total / limitNum),
+      },
+    });
   } catch (error) {
     res
       .status(500)
