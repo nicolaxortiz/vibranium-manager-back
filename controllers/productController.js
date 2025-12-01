@@ -94,22 +94,38 @@ export const deleteProduct = async (req, res) => {
 
 export const searchProducts = async (req, res) => {
   try {
-    const q = (req.query.q || "").trim();
-
-    if (!q) {
-      return res.status(400).json({ message: "Query 'q' is required." });
-    }
+    const { search = "", page = 1, limit = 10 } = req.query;
 
     const escapeRegExp = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
-    const safe = escapeRegExp(q);
+    const safe = escapeRegExp(search);
     const partialRegex = new RegExp(safe, "i");
 
-    const products = await Product.find({
+    const filters = {
       $or: [{ name: partialRegex }, { code: partialRegex }],
-    }).sort({ name: 1 });
+    };
 
-    res.json(products);
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+    const limitNum = parseInt(limit);
+
+    const results = await Product.find(filters)
+      .sort({ name: 1 })
+      .skip(skip)
+      .limit(limitNum);
+
+    const total = await Product.countDocuments({
+      ...filters,
+    });
+
+    res.json({
+      products: results,
+      pagination: {
+        page: parseInt(page),
+        limit: limitNum,
+        total,
+        pages: Math.ceil(total / limitNum),
+      },
+    });
   } catch (error) {
     res.status(500).json({
       message: "Error searching products",

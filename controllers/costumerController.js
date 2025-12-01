@@ -43,20 +43,17 @@ export const searchCustomers = async (req, res) => {
   try {
     const { search = "", page = 1, limit = 10 } = req.query;
 
-    // Escapa caracteres especiales para usar en RegExp
     const escapeRegExp = (string) =>
       string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
     const escaped = escapeRegExp(search);
-    const partialRegex = new RegExp(escaped, "i"); // partial, case-insensitive
-    const startsWithRegex = new RegExp("^" + escaped, "i"); // startsWith (useful for documentId)
+    const partialRegex = new RegExp(escaped, "i");
+    const startsWithRegex = new RegExp("^" + escaped, "i");
 
-    // Construimos filtros: si coincide en cualquiera de estos campos
     const filters = {
       $or: [{ name: partialRegex }, { document: startsWithRegex }],
     };
 
-    // Paginación
     const skip = (parseInt(page) - 1) * parseInt(limit);
     const limitNum = parseInt(limit);
 
