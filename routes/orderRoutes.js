@@ -8,15 +8,16 @@ import {
   downloadOrder,
   searchOrders,
 } from "../controllers/orderController.js";
+import { verifyToken } from "../middlewares/auth.js";
 
 const router = Router();
 
-router.post("/", createOrder); // Crear orden
-router.get("/", getOrders); // Listar órdenes
-router.get("/download/:id", downloadOrder);
-router.get("/search", searchOrders);
-router.get("/:id", getOrderById); // Obtener una orden
-router.put("/:id", updateOrder); // Actualizar
-router.delete("/:id", deleteOrder); // Eliminar
+router.post("/", verifyToken, createOrder);
+router.get("/", verifyToken, getOrders);
+router.get("/download/:id", verifyToken, downloadOrder);
+router.get("/search", verifyToken, searchOrders);
+router.get("/:id", verifyToken, getOrderById);
+router.put("/:id", verifyToken, updateOrder);
+router.delete("/:id", verifyToken, deleteOrder);
 
 export default router;
