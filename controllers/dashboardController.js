@@ -161,7 +161,7 @@ export const getDashboardStats = async (req, res) => {
         },
       },
       { $sort: { debt: -1 } },
-      { $limit: 7 },
+      { $limit: 9 },
     ]);
 
     const monthNames = [
