@@ -72,3 +72,9 @@ export const signin = async (req, res) => {
       .json({ message: "Error al iniciar sesión: " + error.message });
   }
 };
+
+export const validateLogin = async (req, res) => {
+  res.json({
+    message: "Login validado",
+  });
+};
